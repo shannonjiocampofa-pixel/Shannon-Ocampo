@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ecommerce Coffee Shop - Shannon Ocampo</title>
+
+<style>
+/* 🎨 PALETA NEGRO + AZUL PASTEL */
+:root{
+  --bg:#0d0f12;
+  --panel:#151820;
+  --card:#1c1f27;
+  --text:#f2f6ff;
+  --accent:#8ab4ff;
+  --accent2:#a5c8ff;
+  --danger:#d9534f;
+  --border:#2d3342;
+}
+
+body{
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding:20px;
+  text-align:center;
+}
+
+h1{
+  color: var(--accent);
+}
+
+#productos{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+
+.producto{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:10px;
+}
+
+.producto img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.producto button{
+  background:var(--accent);
+  color:#000;
+  padding:8px;
+  margin-top:10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.carrito{
+  margin-top:30px;
+  background:var(--panel);
+  padding:18px;
+  border-radius:10px;
+  display:inline-block;
+  width:350px;
+  text-align:left;
+}
+
+.carrito ul{
+  list-style:none;
+  padding:0;
+}
+
+.carrito li{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:8px;
+}
+
+button{
+  cursor:pointer;
+}
+
+.control{
+  display:flex;
+  gap:6px;
+  margin-top:8px;
+}
+
+.control button{
+  flex:1;
+  padding:6px;
+  border:none;
+  border-radius:6px;
+  background:var(--accent2);
+  color:#000;
+}
+
+.eliminar{
+  background:var(--danger) !important;
+  color:#fff;
+}
+
+.vaciar{
+  width:100%;
+  padding:10px;
+  background:var(--danger);
+  border:none;
+  color:#fff;
+  font-weight:bold;
+  border-radius:6px;
+  margin-top:10px;
+}
+
+#btn-finalizar{
+  width:100%;
+  padding:10px;
+  background:var(--accent);
+  border:none;
+  color:#000;
+  font-weight:bold;
+  border-radius:6px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>☕ Ecommerce Coffee Shop - Shannon Ocampo</h1>
+
+<div id="productos"></div>
+
+<div class="carrito">
+  <h2>🧾 Carrito de Compras (<span id="cantidad">0</span>)</h2>
+
+  <ul id="lista-carrito"></ul>
+
+  <p>Subtotal: <strong id="subtotal">$0.00</strong></p>
+  <p>Impuestos: <strong id="impuestos">$0.00</strong></p>
+  <p>Descuento: <strong id="descuento">$0.00</strong></p>
+  <p><strong>Total: <span id="total">$0.00</span></strong></p>
+
+  <button class="vaciar" id="btn-vaciar">🧼 Vaciar Carrito</button>
+  <button id="btn-finalizar">✅ Finalizar Compra</button>
+</div>
+
+<script>
+// ===============================
+// DATASET (IMÁGENES INTACTAS)
+// ===============================
+const productos = [
+  {
+    id: 1,
+    nombre: "Chai latte",
+    precio: 25.00,
+    img: "https://images.mrcook.app/recipe-image/0194ac29-fed1-76e6-b83e-a66ca5baebda?cacheKey=VHVlLCAyOCBKYW4gMjAyNSAwOTowNzowMyBHTVQ="
+  },
+  {
+    id: 2,
+    nombre: "Croissant de almendras",
+    precio: 18.00,
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgXdHO_hkskjsd-L9BxV1wSC5hQ-tt_IDI0CY31An1HJz9Kfq6SS24BJbexdMdIV3ndPVr5VIC30xenwZdGb5FYqSXjSN1WrJSfz6ar-A9tk1Qyyl4WvDwnijAWLFlLgLKO9o3ON2iEKSD40qvCEAm4lyj4mxxrI3vRD1ehCGvfLgABYFY1R6e0kQAvcvA/s1600/croissants-almendras-frangipane.JPG"
+  },
+  {
+    id: 3,
+    nombre: "Cappuccino",
+    precio: 30.00,
+    img: "https://www.lavazza.com.au/content/dam/lavazza-athena/b2c/stories/article/coffee-secrets/magic-coffee-recipe/hero/m-Magic-Coffee-hero@2.jpg"
+  },
+  {
+    id: 4,
+    nombre: "Matcha latte",
+    precio: 18.00,
+    img: "https://cdn.shopify.com/s/files/1/0799/3475/1065/files/Matcha_Latte_con_Leche_de_Avena_480x480.jpg?v=1734452278"
+  },
+  {
+    id: 5,
+    nombre: "Mini desserts",
+    precio: 22.00,
+    img: "https://www.jonesthegrocer.com/images/mini-dessert-boxes-p2001-7677_zoom.jpg"
+  }
+];
+
+// ===============================
+// ESTADO
+// ===============================
+let carrito = new Map();
+
+const el = {
+  productos: document.getElementById("productos"),
+  lista: document.getElementById("lista-carrito"),
+  subtotal: document.getElementById("subtotal"),
+  impuestos: document.getElementById("impuestos"),
+  descuento: document.getElementById("descuento"),
+  total: document.getElementById("total"),
+  cantidad: document.getElementById("cantidad"),
+  vaciar: document.getElementById("btn-vaciar"),
+  finalizar: document.getElementById("btn-finalizar")
+};
+
+const money = new Intl.NumberFormat("es-CO", {
+  style:"currency", currency:"USD"
+});
+
+// ===============================
+// RENDER PRODUCTOS
+// ===============================
+function renderProductos(){
+  el.productos.innerHTML = "";
+  productos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `
+      <img src="${p.img}" alt="${p.nombre}">
+      <h3>${p.nombre}</h3>
+      <p>Precio: <strong>${money.format(p.precio)}</strong></p>
+      <button data-id="${p.id}">Agregar al carrito</button>
+    `;
+    el.productos.appendChild(div);
+  });
+}
+
+// ===============================
+// MANEJO DEL CARRITO
+// ===============================
+function add(id){
+  const prod = productos.find(p => p.id === id);
+  const item = carrito.get(id);
+
+  if(item) item.cantidad++;
+  else carrito.set(id, {...prod, cantidad:1});
+
+  persist();
+  pintarCarrito();
+}
+
+function dec(id){
+  const item = carrito.get(id);
+  if(!item) return;
+
+  item.cantidad--;
+  if(item.cantidad <= 0) carrito.delete(id);
+
+  persist();
+  pintarCarrito();
+}
+
+function delItem(id){
+  carrito.delete(id);
+  persist();
+  pintarCarrito();
+}
+
+function persist(){
+  localStorage.setItem("carrito", JSON.stringify(Array.from(carrito.entries())));
+}
+
+function load(){
+  const data = localStorage.getItem("carrito");
+  if(data) carrito = new Map(JSON.parse(data));
+}
+
+function totales(){
+  let subtotal = 0;
+  carrito.forEach(i => subtotal += i.precio * i.cantidad);
+
+  return {
+    subtotal,
+    impuestos: subtotal * 0,
+    descuento: 0,
+    total: subtotal,
+    cantidad: [...carrito.values()].reduce((a,i)=>a+i.cantidad,0)
+  };
+}
+
+function pintarCarrito(){
+  el.lista.innerHTML = "";
+
+  carrito.forEach(item => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${item.nombre}</strong> — ${money.format(item.precio)}  
+      <div class="control">
+        <button onclick="dec(${item.id})">−</button>
+        <button onclick="add(${item.id})">+</button>
+        <button class="eliminar" onclick="delItem(${item.id})">Eliminar</button>
+      </div>
+      <p>Cantidad: ${item.cantidad}</p>
+    `;
+    el.lista.appendChild(li);
+  });
+
+  const t = totales();
+  el.subtotal.textContent = money.format(t.subtotal);
+  el.impuestos.textContent = money.format(t.impuestos);
+  el.descuento.textContent = money.format(t.descuento);
+  el.total.textContent = money.format(t.total);
+  el.cantidad.textContent = t.cantidad;
+}
+
+// ===============================
+// EVENTOS
+// ===============================
+document.addEventListener("click", e => {
+  if(e.target.dataset.id){
+    add(Number(e.target.dataset.id));
+  }
+});
+
+el.vaciar.onclick = () => {
+  if(confirm("¿Vaciar carrito?")){
+    carrito.clear();
+    persist();
+    pintarCarrito();
+  }
+};
+
+el.finalizar.onclick = () => {
+  if(carrito.size === 0)
+    return alert("El carrito está vacío.");
+
+  alert("🎉 ¡Gracias por tu compra!");
+  carrito.clear();
+  persist();
+  pintarCarrito();
+};
+
+// ===============================
+// INIT
+// ===============================
+renderProductos();
+load();
+pintarCarrito();
+
+</script>
+
+</body>
+</html>
