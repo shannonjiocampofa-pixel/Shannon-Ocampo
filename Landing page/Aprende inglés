@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inglés de Negocios · Bogotá</title>
+
+  <style>
+    :root{
+      --bg:#0d0d0f;
+      --panel:#16161a;
+      --ink:#f7f7f8;
+      --accent:#ff9acb; /* rosa pastel */
+      --border:#2a2a2e;
+    }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:system-ui, -apple-system, Roboto, Arial, sans-serif;
+      line-height:1.6;
+    }
+
+    a{color:var(--accent);text-decoration:none;}
+
+    header{
+      position:sticky;
+      top:0;
+      background:rgba(13,13,15,.75);
+      backdrop-filter:blur(6px);
+      border-bottom:1px solid var(--border);
+      z-index:100;
+    }
+
+    .nav-container{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:1rem 1.5rem;
+      max-width:1100px;
+      margin:auto;
+    }
+
+    .logo{
+      font-weight:600;
+      font-size:1.1rem;
+    }
+
+    nav ul{
+      display:flex;
+      gap:1.2rem;
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+
+    nav a{
+      font-size:.95rem;
+      opacity:.9;
+    }
+
+    /* Mobile menu */
+    .menu-toggle{
+      display:none;
+      font-size:1.5rem;
+      cursor:pointer;
+    }
+
+    @media(max-width:750px){
+      nav ul{
+        position:absolute;
+        top:60px;
+        right:0;
+        background:var(--panel);
+        width:200px;
+        flex-direction:column;
+        border-left:1px solid var(--border);
+        border-bottom:1px solid var(--border);
+        padding:1rem;
+        display:none;
+      }
+      nav ul.open{
+        display:flex;
+      }
+      .menu-toggle{
+        display:block;
+      }
+    }
+
+    /* HERO */
+    .hero{
+      padding:4rem 1.5rem 5rem;
+      max-width:1100px;
+      margin:auto;
+      text-align:center;
+    }
+    .badge{
+      display:inline-block;
+      background:var(--panel);
+      padding:.35rem .8rem;
+      border-radius:20px;
+      border:1px solid var(--border);
+      font-size:.8rem;
+      opacity:.9;
+    }
+    .hero h1{
+      margin-top:1.4rem;
+      font-size:2.4rem;
+      font-weight:700;
+    }
+    .hero p{
+      max-width:620px;
+      margin:1rem auto 2rem;
+      opacity:.85;
+    }
+
+    .cta-group{
+      display:flex;
+      justify-content:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      padding:.8rem 1.5rem;
+      border-radius:8px;
+      font-weight:600;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition:.2s;
+    }
+    .btn-primary{
+      background:var(--accent);
+      color:#1a1a1a;
+    }
+    .btn-primary:hover{
+      filter:brightness(1.05);
+    }
+    .btn-secondary{
+      border:1px solid var(--accent);
+      color:var(--accent);
+      background:transparent;
+    }
+    .btn-secondary:hover{
+      background:rgba(255,154,203,.1);
+    }
+
+    /* Sections */
+    section{
+      padding:4rem 1.5rem;
+      max-width:1100px;
+      margin:auto;
+    }
+
+    h2{
+      font-size:1.9rem;
+      margin-bottom:1rem;
+    }
+    .intro{
+      max-width:650px;
+      opacity:.85;
+      margin-bottom:2.5rem;
+    }
+
+    /* Servicios */
+    .services-grid{
+      display:grid;
+      gap:1.5rem;
+      grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    }
+    .card{
+      background:var(--panel);
+      padding:1.5rem;
+      border-radius:12px;
+      border:1px solid var(--border);
+    }
+    .chips{
+      margin-top:.8rem;
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+    }
+    .chip{
+      font-size:.75rem;
+      background:#1f1f24;
+      padding:.25rem .6rem;
+      border-radius:14px;
+      border:1px solid var(--border);
+      opacity:.8;
+    }
+
+    /* Clientes - placeholders */
+    .placeholder-logos{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-top:2rem;
+    }
+    .ph-logo{
+      width:110px;
+      height:55px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.75rem;
+      opacity:.6;
+    }
+
+    /* FAQ */
+    details{
+      background:var(--panel);
+      border:1px solid var(--border);
+      padding:1rem 1.2rem;
+      border-radius:8px;
+      margin-bottom:1rem;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:100%;
+      background:rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:1rem;
+      z-index:200;
+    }
+    .modal.open{
+      display:flex;
+    }
+    .modal-content{
+      background:var(--panel);
+      border:1px solid var(--border);
+      max-width:700px;
+      width:100%;
+      height:85vh;
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+    }
+    .modal-close{
+      position:absolute;
+      top:10px;
+      right:10px;
+      cursor:pointer;
+      background:var(--accent);
+      color:black;
+      padding:.3rem .6rem;
+      border-radius:4px;
+      font-weight:700;
+      z-index:10;
+    }
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+    }
+
+    footer{
+      padding:2rem;
+      text-align:center;
+      opacity:.6;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav-container">
+    <div class="logo">English Business Coach · Bogotá</div>
+
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+
+    <nav>
+      <ul id="nav-menu">
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#metodologia">Metodología</a></li>
+        <li><a href="#clientes">Clientes</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">Inglés de negocios · Bogotá, Colombia</span>
+    <h1>Clases y cursos de inglés para profesionales y empresas</h1>
+    <p>Aprende inglés de negocios de forma práctica, moderna y enfocada en resultados. Modalidades presenciales, virtuales y cursos autónomos para avanzar a tu propio ritmo.</p>
+
+    <div class="cta-group">
+      <button class="btn btn-primary" id="open-modal">Agendar sesión</button>
+      <a href="#servicios" class="btn btn-secondary">Ver servicios</a>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios">
+    <h2>Servicios</h2>
+    <p class="intro">Programas diseñados para profesionales y equipos empresariales que necesitan mejorar su inglés aplicado al entorno laboral.</p>
+
+    <div class="services-grid">
+
+      <div class="card">
+        <h3>Cursos autónomos</h3>
+        <p>Contenido práctico y estructurado para aprender inglés de negocios a tu ritmo, desde cualquier lugar.</p>
+        <div class="chips">
+          <span class="chip">flexible</span>
+          <span class="chip">autodirigido</span>
+          <span class="chip">material descargable</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Clases presenciales</h3>
+        <p>Sesiones personalizadas en Bogotá para reforzar comunicación corporativa, presentaciones y vocabulario profesional.</p>
+        <div class="chips">
+          <span class="chip">interactivo</span>
+          <span class="chip">práctica real</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Clases virtuales</h3>
+        <p>Para quienes están fuera de Bogotá o Colombia. Entrenamiento intensivo y flexible con enfoque empresarial.</p>
+        <div class="chips">
+          <span class="chip">videollamada</span>
+          <span class="chip">horarios flexibles</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- METODOLOGÍA -->
+  <section id="metodologia">
+    <h2>Metodología</h2>
+    <p class="intro">Me alegra que estés aquí. Este espacio está diseñado para que aprendas inglés a tu ritmo, de forma fácil, ágil y orientada a resultados reales en tu entorno profesional.</p>
+
+    <div class="services-grid">
+      <div class="card">
+        <h3>1. Diagnóstico</h3>
+        <p>Evaluación inicial para identificar tu nivel y tus objetivos laborales.</p>
+      </div>
+      <div class="card">
+        <h3>2. Plan de aprendizaje</h3>
+        <p>Diseño de un plan personalizado según tus necesidades profesionales.</p>
+      </div>
+      <div class="card">
+        <h3>3. Entrenamiento</h3>
+        <p>Clases enfocadas en situaciones reales de trabajo, vocabulario y fluidez.</p>
+      </div>
+      <div class="card">
+        <h3>4. Seguimiento</h3>
+        <p>Retroalimentación continua y medición del progreso.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section id="clientes">
+    <h2>Clientes</h2>
+    <p class="intro">He trabajado con profesionales de diferentes sectores y con equipos empresariales que buscan mejorar su comunicación en inglés. Estos son placeholders para tus futuros logos:</p>
+
+    <div class="placeholder-logos">
+      <div class="ph-logo">Logo</div>
+      <div class="ph-logo">Logo</div>
+      <div class="ph-logo">Logo</div>
+      <div class="ph-logo">Logo</div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <h2>Preguntas frecuentes</h2>
+
+    <details>
+      <summary>¿Cuál es el precio de las clases virtuales?</summary>
+      <p>El valor depende de la intensidad horaria y el nivel. Puedes solicitar una cotización en el formulario.</p>
+    </details>
+
+    <details>
+      <summary>¿Cuál es el precio de las clases presenciales en Bogotá?</summary>
+      <p>Las clases presenciales tienen un costo adicional por desplazamiento y modalidad personalizada.</p>
+    </details>
+
+    <details>
+      <summary>¿Cuánto cuestan los cursos autónomos?</summary>
+      <p>Los cursos autónomos tienen precios variables según el material incluido. Puedes ver las opciones al agendar sesión.</p>
+    </details>
+
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p class="intro">¿Listo para iniciar tu proceso? Puedes agendar una sesión o solicitar más información usando el siguiente formulario.</p>
+    <button class="btn btn-primary" id="open-modal-2">Abrir formulario</button>
+  </section>
+
+</main>
+
+<footer>
+  © 2025 · Inglés de Negocios · Bogotá, Colombia
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-close" id="close-modal">X</div>
+
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfLpB6RO2u6TI8PfwNChOnMcEsMiObtahBDupK2hNmO47OblA/viewform?usp=publish-editor"></iframe>
+  </div>
+</div>
+
+<script>
+  // Mobile menu
+  const toggle = document.getElementById("menu-toggle");
+  const navMenu = document.getElementById("nav-menu");
+  toggle.addEventListener("click",()=>navMenu.classList.toggle("open"));
+
+  // Modal
+  const modal = document.getElementById("modal");
+  const open1 = document.getElementById("open-modal");
+  const open2 = document.getElementById("open-modal-2");
+  const close = document.getElementById("close-modal");
+
+  open1.addEventListener("click",()=>modal.classList.add("open"));
+  open2.addEventListener("click",()=>modal.classList.add("open"));
+  close.addEventListener("click",()=>modal.classList.remove("open"));
+  modal.addEventListener("click",(e)=>{ if(e.target===modal) modal.classList.remove("open"); });
+</script>
+
+</body>
+</html>
