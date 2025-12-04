@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inglés de Negocios · Bogotá</title>
 
-  <style>
+  <style> 
     :root{
       --bg:#0d0d0f;
       --panel:#16161a;
